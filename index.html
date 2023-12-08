@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <title>GST Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div {
+            margin: 10px;
+        }
+
+        .calcform {
+            padding: 20px;
+            border: 2px solid black;
+            background-color: lightblue;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-3">
+        <h1>GST Tax Calculator</h1>
+        <p id="para1">Goods and services tax (GST) calculator:</p>
+        <form action="" class="calcform row">
+            <div class="countrySel">
+                <select class="form-select" aria-label="Default select example" name="country" id="countrySel">
+                    <option selected>Countries</option>
+                    <option value="australia">Australia</option>
+                    <option value="canada">Canada</option>
+                    <option value="hongkong">Hong Kong</option>
+                    <option value="malaysia">Malaysia</option>
+                    <option value="newzealand">Newzealand</option>
+                    <option value="singapore">Singapore</option>
+                    <option value="otherCountry">-Other Country-</option>
+                </select>
+            </div>
+            <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">$</span>
+                <input type="text" class="form-control" placeholder="Amount" aria-label="Amount"
+                    aria-describedby="addon-wrapping" id="amount">
+                <button class="input-group-text" id="addon-wrapping" onclick="onClear()">x</button>
+            </div>
+            <div class="input-group flex-nowrap">
+                <input type="text" class="form-control" placeholder="Rate" aria-label="Rate"
+                    aria-describedby="addon-wrapping" id="rate">
+                <span class="input-group-text" id="addon-wrapping">%</span>
+            </div>
+            <div class="d-grid gap-2 d-md-block">
+                <button type="button" class="btn btn-outline-danger" onclick="onCalcGst(1)">+ Add GST</button>
+                <button type="button" class="btn btn-outline-warning" onclick="onCalcGst(0)">- Remove GST</button>
+            </div>
+            <div>
+                <table class="table table-dark" id="tbl">
+                    <thead>
+                        <tr>
+                            <th>Net Amount</th>
+                            <th>GST Rate</th>
+                            <th>GST Amount</th>
+                            <th>Gross Amount</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        "use strict";
+        let amountElem = document.getElementById("amount");
+        let rateElem = document.getElementById("rate");
+        let cur = '$';
+
+        function onClear() {
+            amountElem.value = "";
+        }
+
+        function onCalcGst(op) {
+            let netAmount, gstAmount, grossAmount;
+            let amount = amountElem.value;
+            if (amount == "") amount = "0";
+            amount = Number(amount);
+            let rate = rateElem.value;
+            if (rate == "") rate = "0";
+            rate = Number(rate);
+            if (op == 1) {
+                netAmount = amount;
+                gstAmount = amount * rate / 100;
+                grossAmount = parseFloat(netAmount) + parseFloat(gstAmount);
+            }
+            else {
+                grossAmount = amount;
+                netAmount = 100 * amount / (100.0 + parseFloat(rate));
+                gstAmount = parseFloat(grossAmount) - parseFloat(netAmount);
+            }
+
+            netAmount = Number(netAmount);
+            gstAmount = Number(gstAmount);
+            grossAmount = Number(grossAmount);
+            addRow(netAmount, rate, gstAmount, grossAmount);
+        }
+
+        function addRow(net, rate, gst, gross) {
+            let tableRef = document.getElementById('tbl');
+            let newRow = tableRef.insertRow(1);
+            let tr = "<tr>" + "<td>" + cur + net + "</td>" + "<td>" + rate + "%" + "</td>" + "<td>" + cur + gst + "</td>" + "<td>" + cur + gross + "</td>" + "</tr>";
+            newRow.innerHTML = tr;
+        }
+    </script>
+
+
+</body>
+
+</html>
